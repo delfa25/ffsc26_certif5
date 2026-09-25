@@ -6,63 +6,109 @@ import 'package:ffsc26_certif5/widgets/task_card.dart';
 import 'package:ffsc26_certif5/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('TaskCard displays task information and triggers callbacks', (
-    WidgetTester tester,
-  ) async {
-    bool tapped = false;
-    bool deleted = false;
-    bool? toggledValue;
+  group('TaskCard Widget Tests', () {
+    testWidgets('TaskCard displays task information and triggers callbacks', (
+      WidgetTester tester,
+    ) async {
+      bool tapped = false;
+      bool deleted = false;
+      bool? toggledValue;
 
-    final task = Task(
-      id: 'tc_1',
-      title: 'Complete Unit Tests',
-      description: 'Write 10 unit tests for certification',
-      category: TaskCategory.tech,
-      priority: TaskPriority.high,
-      dueDate: DateTime.now().add(const Duration(days: 1)),
-      isCompleted: false,
-      createdAt: DateTime.now(),
-    );
+      final task = Task(
+        id: 'tc_1',
+        title: 'Complete Unit Tests',
+        description: 'Write 10 unit tests for certification',
+        category: TaskCategory.tech,
+        priority: TaskPriority.high,
+        dueDate: DateTime.now().add(const Duration(days: 1)),
+        isCompleted: false,
+        createdAt: DateTime.now(),
+      );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('en'),
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: Scaffold(
-          body: TaskCard(
-            task: task,
-            onTap: () => tapped = true,
-            onDelete: () => deleted = true,
-            onToggle: (val) => toggledValue = val,
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: Scaffold(
+            body: TaskCard(
+              task: task,
+              onTap: () => tapped = true,
+              onDelete: () => deleted = true,
+              onToggle: (val) => toggledValue = val,
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.text('Complete Unit Tests'), findsOneWidget);
-    expect(find.text('Write 10 unit tests for certification'), findsOneWidget);
+      expect(find.text('Complete Unit Tests'), findsOneWidget);
+      expect(
+          find.text('Write 10 unit tests for certification'), findsOneWidget);
 
-    // Tap card
-    await tester.tap(find.text('Complete Unit Tests'));
-    await tester.pump();
-    expect(tapped, isTrue);
+      // Tap card
+      await tester.tap(find.text('Complete Unit Tests'));
+      await tester.pump();
+      expect(tapped, isTrue);
 
-    // Tap delete button
-    await tester.tap(find.byIcon(Icons.delete_outline));
-    await tester.pump();
-    expect(deleted, isTrue);
+      // Tap delete button
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pump();
+      expect(deleted, isTrue);
 
-    // Tap checkbox
-    await tester.tap(find.byType(Checkbox));
-    await tester.pump();
-    expect(toggledValue, isTrue);
+      // Tap checkbox
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+      expect(toggledValue, isTrue);
+    });
+
+    testWidgets('TaskCard renders Semantics node for accessibility', (
+      WidgetTester tester,
+    ) async {
+      final task = Task(
+        id: 'tc_2',
+        title: 'Accessibility Task',
+        description: 'Testing Semantics label',
+        category: TaskCategory.work,
+        priority: TaskPriority.medium,
+        dueDate: DateTime.now(),
+        isCompleted: true,
+        createdAt: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: Scaffold(
+            body: TaskCard(
+              task: task,
+              onTap: () {},
+              onDelete: () {},
+              onToggle: (_) {},
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Task card for Accessibility Task'),
+        findsOneWidget,
+      );
+    });
   });
 }

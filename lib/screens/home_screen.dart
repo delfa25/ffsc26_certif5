@@ -38,25 +38,35 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(l10n.appTitle),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bar_chart),
-            tooltip: l10n.analytics,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
-              );
-            },
+          Semantics(
+            label: l10n.analytics,
+            hint: 'Open analytics and productivity score',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.bar_chart),
+              tooltip: l10n.analytics,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
+                );
+              },
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: l10n.settings,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
+          Semantics(
+            label: l10n.settings,
+            hint: 'Open app settings and preferences',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: l10n.settings,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -94,26 +104,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Search Bar
-                  TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: l10n.searchHint,
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _searchController.clear();
-                                taskProvider.setSearchQuery('');
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Semantics(
+                    label: 'Search input field',
+                    hint: 'Type title or tag to filter tasks',
+                    textField: true,
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchHint,
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  taskProvider.setSearchQuery('');
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      onChanged: (val) => taskProvider.setSearchQuery(val),
                     ),
-                    onChanged: (val) => taskProvider.setSearchQuery(val),
                   ),
                   const SizedBox(height: 12),
                   // Filter Chips
@@ -121,23 +137,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        FilterChip(
-                          label: Text(l10n.allCategories),
+                        Semantics(
+                          label: 'Filter all categories',
+                          button: true,
                           selected: taskProvider.selectedCategory == null,
-                          onSelected: (_) =>
-                              taskProvider.setCategoryFilter(null),
+                          child: FilterChip(
+                            label: Text(l10n.allCategories),
+                            selected: taskProvider.selectedCategory == null,
+                            onSelected: (_) =>
+                                taskProvider.setCategoryFilter(null),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         ...TaskCategory.values.map((cat) {
+                          final isSelected =
+                              taskProvider.selectedCategory == cat;
                           return Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: FilterChip(
-                              label: Text(l10n.categoryName(cat)),
-                              selected: taskProvider.selectedCategory == cat,
-                              onSelected: (_) => taskProvider.setCategoryFilter(
-                                taskProvider.selectedCategory == cat
-                                    ? null
-                                    : cat,
+                            child: Semantics(
+                              label:
+                                  'Filter category ${l10n.categoryName(cat)}',
+                              button: true,
+                              selected: isSelected,
+                              child: FilterChip(
+                                label: Text(l10n.categoryName(cat)),
+                                selected: isSelected,
+                                onSelected: (_) =>
+                                    taskProvider.setCategoryFilter(
+                                  isSelected ? null : cat,
+                                ),
                               ),
                             ),
                           );
@@ -218,15 +246,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const TaskFormScreen()),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addTask),
+      floatingActionButton: Semantics(
+        label: l10n.addTask,
+        hint: 'Tap to open new task form',
+        button: true,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TaskFormScreen()),
+            );
+          },
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addTask),
+        ),
       ),
     );
   }

@@ -111,115 +111,148 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Title Field
-              TextFormField(
-                key: const Key('task_title_input'),
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: '${l10n.title} *',
-                  border: const OutlineInputBorder(),
+              Semantics(
+                label: 'Task title input field',
+                hint: 'Enter task title',
+                textField: true,
+                child: TextFormField(
+                  key: const Key('task_title_input'),
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: '${l10n.title} *',
+                    border: const OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return l10n.requiredField;
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return l10n.requiredField;
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
               // Description Field
-              TextFormField(
-                key: const Key('task_desc_input'),
-                controller: _descController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: l10n.description,
-                  border: const OutlineInputBorder(),
+              Semantics(
+                label: 'Task description input field',
+                hint: 'Enter task details and description',
+                textField: true,
+                child: TextFormField(
+                  key: const Key('task_desc_input'),
+                  controller: _descController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: l10n.description,
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
 
               // Category Dropdown
-              DropdownButtonFormField<TaskCategory>(
-                // ignore: deprecated_member_use
-                value: _category,
-                decoration: InputDecoration(
-                  labelText: l10n.category,
-                  border: const OutlineInputBorder(),
+              Semantics(
+                label: 'Category selector dropdown',
+                hint: 'Select task category',
+                child: DropdownButtonFormField<TaskCategory>(
+                  // ignore: deprecated_member_use
+                  value: _category,
+                  decoration: InputDecoration(
+                    labelText: l10n.category,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: TaskCategory.values.map((cat) {
+                    return DropdownMenuItem(
+                      value: cat,
+                      child: Text(l10n.categoryName(cat)),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) setState(() => _category = val);
+                  },
                 ),
-                items: TaskCategory.values.map((cat) {
-                  return DropdownMenuItem(
-                    value: cat,
-                    child: Text(l10n.categoryName(cat)),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _category = val);
-                },
               ),
               const SizedBox(height: 16),
 
               // Priority Dropdown
-              DropdownButtonFormField<TaskPriority>(
-                // ignore: deprecated_member_use
-                value: _priority,
-                decoration: InputDecoration(
-                  labelText: l10n.priority,
-                  border: const OutlineInputBorder(),
+              Semantics(
+                label: 'Priority selector dropdown',
+                hint: 'Select task priority level',
+                child: DropdownButtonFormField<TaskPriority>(
+                  // ignore: deprecated_member_use
+                  value: _priority,
+                  decoration: InputDecoration(
+                    labelText: l10n.priority,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: TaskPriority.values.map((p) {
+                    return DropdownMenuItem(
+                      value: p,
+                      child: Text(l10n.priorityName(p)),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) setState(() => _priority = val);
+                  },
                 ),
-                items: TaskPriority.values.map((p) {
-                  return DropdownMenuItem(
-                    value: p,
-                    child: Text(l10n.priorityName(p)),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _priority = val);
-                },
               ),
               const SizedBox(height: 16),
 
               // Due Date Picker
-              InkWell(
-                onTap: () => _selectDueDate(context),
-                child: InputDecorator(
-                  decoration: InputDecoration(
-                    labelText: l10n.dueDate,
-                    border: const OutlineInputBorder(),
-                    suffixIcon: const Icon(Icons.calendar_today),
+              Semantics(
+                label: 'Due date selector',
+                hint: 'Tap to pick due date',
+                button: true,
+                child: InkWell(
+                  onTap: () => _selectDueDate(context),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: l10n.dueDate,
+                      border: const OutlineInputBorder(),
+                      suffixIcon: const Icon(Icons.calendar_today),
+                    ),
+                    child: Text(DateFormat('dd MMMM yyyy').format(_dueDate)),
                   ),
-                  child: Text(DateFormat('dd MMMM yyyy').format(_dueDate)),
                 ),
               ),
               const SizedBox(height: 16),
 
               // Tags Field
-              TextFormField(
-                controller: _tagsController,
-                decoration: InputDecoration(
-                  labelText: l10n.tags,
-                  hintText: 'ex: Flutter, Dev, Urgent',
-                  border: const OutlineInputBorder(),
+              Semantics(
+                label: 'Tags input field',
+                hint: 'Enter comma-separated tags',
+                textField: true,
+                child: TextFormField(
+                  controller: _tagsController,
+                  decoration: InputDecoration(
+                    labelText: l10n.tags,
+                    hintText: 'ex: Flutter, Dev, Urgent',
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
 
               // Save Button
-              ElevatedButton.icon(
-                key: const Key('save_task_button'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Semantics(
+                label: 'Save task button',
+                hint: 'Tap to save task changes',
+                button: true,
+                child: ElevatedButton.icon(
+                  key: const Key('save_task_button'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                onPressed: _saveForm,
-                icon: const Icon(Icons.save),
-                label: Text(
-                  l10n.save,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  onPressed: _saveForm,
+                  icon: const Icon(Icons.save),
+                  label: Text(
+                    l10n.save,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

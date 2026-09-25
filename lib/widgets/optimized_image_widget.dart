@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// An optimized image widget supporting network/asset rendering, lazy loading,
-/// smooth fade-in frameBuilder, placeholder shimmer/spinner, and error fallback handling.
+/// An optimized image widget supporting network and local assets rendering,
+/// lazy loading with memory cache constraint parameters (`cacheWidth`/`cacheHeight`),
+/// smooth fade-in frameBuilder transitions, loading progress indicator, and error fallbacks.
 class OptimizedImageWidget extends StatelessWidget {
   final String? imageUrl;
   final String? fallbackAsset;
@@ -22,25 +23,31 @@ class OptimizedImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: _buildContent(context),
+    return Semantics(
+      label: 'Task thumbnail image',
+      image: true,
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: _buildContent(context),
+        ),
       ),
     );
   }
 
   Widget _buildContent(BuildContext context) {
     if (imageUrl != null && imageUrl!.startsWith('http')) {
+      final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
       return Image.network(
         imageUrl!,
         width: width,
         height: height,
         fit: fit,
-        cacheWidth: (width * MediaQuery.of(context).devicePixelRatio).toInt(),
-        cacheHeight: (height * MediaQuery.of(context).devicePixelRatio).toInt(),
+        // Lazy loading image optimization: restrict in-memory decode size based on display dimensions
+        cacheWidth: (width * devicePixelRatio).toInt(),
+        cacheHeight: (height * devicePixelRatio).toInt(),
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (wasSynchronouslyLoaded) return child;
           return AnimatedOpacity(

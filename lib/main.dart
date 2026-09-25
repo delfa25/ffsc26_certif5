@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'providers/task_provider.dart';
 import 'providers/settings_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/home_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize intl date formatting symbols and locale translation setup
+  Intl.defaultLocale = 'fr_FR';
+  await initializeDateFormatting('fr_FR', null);
+  await initializeDateFormatting('en_US', null);
+  await initializeDateFormatting('fr', null);
+  await initializeDateFormatting('en', null);
+
   runApp(const MyApp());
 }
 
