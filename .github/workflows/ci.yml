@@ -1,0 +1,44 @@
+name: TaskCraft CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  build_and_test:
+    name: Flutter Analyze & Test Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java Development Kit
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check code formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Run Flutter Static Analysis
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Run Unit & Widget Tests
+        run: flutter test --coverage
+
+      - name: Build Android APK
+        run: flutter build apk --split-per-abi --debug
