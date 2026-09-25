@@ -141,7 +141,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
               // Category Dropdown
               DropdownButtonFormField<TaskCategory>(
-                initialValue: _category,
+                // ignore: deprecated_member_use
+                value: _category,
                 decoration: InputDecoration(
                   labelText: l10n.category,
                   border: const OutlineInputBorder(),
@@ -160,7 +161,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
               // Priority Dropdown
               DropdownButtonFormField<TaskPriority>(
-                initialValue: _priority,
+                // ignore: deprecated_member_use
+                value: _priority,
                 decoration: InputDecoration(
                   labelText: l10n.priority,
                   border: const OutlineInputBorder(),
