@@ -31,5 +31,10 @@ void main() {
       expect(deserialized.title, equals(subtask.title));
       expect(deserialized.isCompleted, equals(subtask.isCompleted));
     });
+
+    test('Subtask.fromJson throws FormatException when id or title is missing', () {
+      expect(() => Subtask.fromJson({'title': 'No ID'}), throwsFormatException);
+      expect(() => Subtask.fromJson({'id': 's1'}), throwsFormatException);
+    });
   });
 }

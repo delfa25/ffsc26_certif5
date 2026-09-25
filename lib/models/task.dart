@@ -118,75 +118,84 @@ class Task {
   }
 
   factory Task.fromJson(Map<String, dynamic> json) {
-    try {
-      final id = json['id']?.toString() ??
-          DateTime.now().millisecondsSinceEpoch.toString();
-      final title = json['title']?.toString() ?? 'Untitled Task';
-      final description = json['description']?.toString() ?? '';
-
-      final categoryStr = json['category']?.toString().toLowerCase() ?? '';
-      final category = TaskCategory.values.firstWhere(
-        (c) => c.name.toLowerCase() == categoryStr,
-        orElse: () => TaskCategory.work,
-      );
-
-      final priorityStr = json['priority']?.toString().toLowerCase() ?? '';
-      final priority = TaskPriority.values.firstWhere(
-        (p) => p.name.toLowerCase() == priorityStr,
-        orElse: () => TaskPriority.medium,
-      );
-
-      DateTime dueDate;
-      if (json['dueDate'] != null) {
-        dueDate =
-            DateTime.tryParse(json['dueDate'].toString()) ?? DateTime.now();
-      } else {
-        dueDate = DateTime.now();
-      }
-
-      DateTime createdAt;
-      if (json['createdAt'] != null) {
-        createdAt =
-            DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now();
-      } else {
-        createdAt = DateTime.now();
-      }
-
-      final isCompleted = json['isCompleted'] is bool
-          ? json['isCompleted'] as bool
-          : json['isCompleted']?.toString().toLowerCase() == 'true';
-
-      List<Subtask> subtasks = [];
-      if (json['subtasks'] is List) {
-        subtasks = (json['subtasks'] as List)
-            .whereType<Map<String, dynamic>>()
-            .map((s) => Subtask.fromJson(s))
-            .toList();
-      }
-
-      List<String> tags = [];
-      if (json['tags'] is List) {
-        tags = (json['tags'] as List).map((t) => t.toString()).toList();
-      }
-
-      final imageUrl = json['imageUrl']?.toString();
-
-      return Task(
-        id: id,
-        title: title,
-        description: description,
-        category: category,
-        priority: priority,
-        dueDate: dueDate,
-        isCompleted: isCompleted,
-        subtasks: subtasks,
-        tags: tags,
-        createdAt: createdAt,
-        imageUrl: imageUrl,
-      );
-    } catch (e) {
-      throw FormatException('Failed to parse Task from JSON: $e');
+    if (json['id'] == null || json['id'].toString().trim().isEmpty) {
+      throw const FormatException('Task JSON requires a valid "id" string.');
     }
+    if (json['title'] == null || json['title'].toString().trim().isEmpty) {
+      throw const FormatException('Task JSON requires a valid "title" string.');
+    }
+
+    final id = json['id'].toString().trim();
+    final title = json['title'].toString().trim();
+    final description = json['description']?.toString() ?? '';
+
+    final categoryStr = json['category']?.toString().toLowerCase() ?? '';
+    final category = TaskCategory.values.firstWhere(
+      (c) => c.name.toLowerCase() == categoryStr,
+      orElse: () => TaskCategory.work,
+    );
+
+    final priorityStr = json['priority']?.toString().toLowerCase() ?? '';
+    final priority = TaskPriority.values.firstWhere(
+      (p) => p.name.toLowerCase() == priorityStr,
+      orElse: () => TaskPriority.medium,
+    );
+
+    DateTime dueDate;
+    if (json['dueDate'] != null) {
+      final parsed = DateTime.tryParse(json['dueDate'].toString());
+      if (parsed == null) {
+        throw FormatException('Invalid "dueDate" format: ${json['dueDate']}');
+      }
+      dueDate = parsed;
+    } else {
+      dueDate = DateTime.now().add(const Duration(days: 1));
+    }
+
+    DateTime createdAt;
+    if (json['createdAt'] != null) {
+      final parsed = DateTime.tryParse(json['createdAt'].toString());
+      if (parsed == null) {
+        throw FormatException(
+            'Invalid "createdAt" format: ${json['createdAt']}');
+      }
+      createdAt = parsed;
+    } else {
+      createdAt = DateTime.now();
+    }
+
+    final isCompleted = json['isCompleted'] is bool
+        ? json['isCompleted'] as bool
+        : json['isCompleted']?.toString().toLowerCase() == 'true';
+
+    List<Subtask> subtasks = [];
+    if (json['subtasks'] is List) {
+      subtasks = (json['subtasks'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map((s) => Subtask.fromJson(s))
+          .toList();
+    }
+
+    List<String> tags = [];
+    if (json['tags'] is List) {
+      tags = (json['tags'] as List).map((t) => t.toString()).toList();
+    }
+
+    final imageUrl = json['imageUrl']?.toString();
+
+    return Task(
+      id: id,
+      title: title,
+      description: description,
+      category: category,
+      priority: priority,
+      dueDate: dueDate,
+      isCompleted: isCompleted,
+      subtasks: subtasks,
+      tags: tags,
+      createdAt: createdAt,
+      imageUrl: imageUrl,
+    );
   }
 
   @override

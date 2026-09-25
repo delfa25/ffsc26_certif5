@@ -92,5 +92,26 @@ void main() {
       expect(deserialized.subtasks.length, equals(1));
       expect(deserialized.subtasks.first.title, equals('Sub task item'));
     });
+
+    test('Task.fromJson throws FormatException when id is missing or empty', () {
+      expect(() => Task.fromJson({'title': 'No ID'}), throwsFormatException);
+      expect(() => Task.fromJson({'id': '', 'title': 'Empty ID'}), throwsFormatException);
+    });
+
+    test('Task.fromJson throws FormatException when title is missing or empty', () {
+      expect(() => Task.fromJson({'id': '1'}), throwsFormatException);
+      expect(() => Task.fromJson({'id': '1', 'title': '   '}), throwsFormatException);
+    });
+
+    test('Task.fromJson throws FormatException when date fields are invalid', () {
+      expect(
+        () => Task.fromJson({'id': '1', 'title': 'Test', 'dueDate': 'invalid-date'}),
+        throwsFormatException,
+      );
+      expect(
+        () => Task.fromJson({'id': '1', 'title': 'Test', 'createdAt': 'invalid-date'}),
+        throwsFormatException,
+      );
+    });
   });
 }

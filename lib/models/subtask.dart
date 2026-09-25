@@ -22,22 +22,25 @@ class Subtask {
   }
 
   factory Subtask.fromJson(Map<String, dynamic> json) {
-    try {
-      final id = json['id']?.toString() ??
-          DateTime.now().millisecondsSinceEpoch.toString();
-      final title = json['title']?.toString() ?? 'Subtask';
-      final isCompleted = json['isCompleted'] is bool
-          ? json['isCompleted'] as bool
-          : json['isCompleted']?.toString().toLowerCase() == 'true';
-
-      return Subtask(
-        id: id,
-        title: title,
-        isCompleted: isCompleted,
-      );
-    } catch (e) {
-      throw FormatException('Failed to parse Subtask from JSON: $e');
+    if (json['id'] == null || json['id'].toString().trim().isEmpty) {
+      throw const FormatException('Subtask JSON requires a valid "id" string.');
     }
+    if (json['title'] == null || json['title'].toString().trim().isEmpty) {
+      throw const FormatException(
+          'Subtask JSON requires a valid "title" string.');
+    }
+
+    final id = json['id'].toString().trim();
+    final title = json['title'].toString().trim();
+    final isCompleted = json['isCompleted'] is bool
+        ? json['isCompleted'] as bool
+        : json['isCompleted']?.toString().toLowerCase() == 'true';
+
+    return Subtask(
+      id: id,
+      title: title,
+      isCompleted: isCompleted,
+    );
   }
 
   @override
