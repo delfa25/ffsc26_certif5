@@ -36,9 +36,9 @@ class StatCard extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                        ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(8),
@@ -54,9 +54,9 @@ class StatCard extends StatelessWidget {
               Text(
                 value,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 4),

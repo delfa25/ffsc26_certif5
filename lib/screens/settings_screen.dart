@@ -63,9 +63,9 @@ class SettingsScreen extends StatelessWidget {
           Text(
             'Préférences',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
           ),
           const SizedBox(height: 8),
 
@@ -80,8 +80,8 @@ class SettingsScreen extends StatelessWidget {
                   settings.themeMode == ThemeMode.dark
                       ? l10n.darkTheme
                       : settings.themeMode == ThemeMode.light
-                      ? l10n.lightTheme
-                      : l10n.systemTheme,
+                          ? l10n.lightTheme
+                          : l10n.systemTheme,
                 ),
                 trailing: DropdownButton<ThemeMode>(
                   value: settings.themeMode,
@@ -134,9 +134,9 @@ class SettingsScreen extends StatelessWidget {
           Text(
             'Données & Réinitialisation',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
           ),
           const SizedBox(height: 8),
 

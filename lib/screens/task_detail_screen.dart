@@ -69,9 +69,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final taskProvider = context.watch<TaskProvider>();
-    final taskList = taskProvider.tasks
-        .where((t) => t.id == widget.taskId)
-        .toList();
+    final taskList =
+        taskProvider.tasks.where((t) => t.id == widget.taskId).toList();
 
     if (taskList.isEmpty) {
       return Scaffold(
@@ -154,11 +153,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   child: Text(
                     task.title,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      decoration: task.isCompleted
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
                   ),
                 ),
               ],
@@ -199,8 +198,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                             color: task.priority == TaskPriority.high
                                 ? Colors.red
                                 : task.priority == TaskPriority.medium
-                                ? Colors.orange
-                                : Colors.green,
+                                    ? Colors.orange
+                                    : Colors.green,
                           ),
                         ),
                       ],
@@ -254,8 +253,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 Text(
                   l10n.subtasks,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.add_circle_outline),

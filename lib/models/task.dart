@@ -127,14 +127,13 @@ class Task {
       ),
       dueDate: DateTime.parse(json['dueDate'] as String),
       isCompleted: json['isCompleted'] as bool? ?? false,
-      subtasks:
-          (json['subtasks'] as List<dynamic>?)
+      subtasks: (json['subtasks'] as List<dynamic>?)
               ?.map((s) => Subtask.fromJson(s as Map<String, dynamic>))
               .toList() ??
           const [],
       tags:
           (json['tags'] as List<dynamic>?)?.map((t) => t as String).toList() ??
-          const [],
+              const [],
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }

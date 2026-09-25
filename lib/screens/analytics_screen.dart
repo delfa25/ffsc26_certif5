@@ -179,8 +179,8 @@ class AnalyticsScreen extends StatelessWidget {
                         backgroundColor: e.key == TaskPriority.high
                             ? Colors.red
                             : e.key == TaskPriority.medium
-                            ? Colors.orange
-                            : Colors.green,
+                                ? Colors.orange
+                                : Colors.green,
                       ),
                       title: Text(l10n.priorityName(e.key)),
                       trailing: Text(

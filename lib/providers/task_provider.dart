@@ -14,7 +14,7 @@ class TaskProvider with ChangeNotifier {
   bool _showOnlyCompleted = false;
 
   TaskProvider({ITaskRepository? repository})
-    : _repository = repository ?? TaskRepository() {
+      : _repository = repository ?? TaskRepository() {
     loadTasks();
   }
 

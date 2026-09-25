@@ -156,9 +156,8 @@ class TaskRepository implements ITaskRepository {
     if (index != -1) {
       final task = _tasks[index];
       final newStatus = !task.isCompleted;
-      final updatedSubtasks = task.subtasks
-          .map((s) => s.copyWith(isCompleted: newStatus))
-          .toList();
+      final updatedSubtasks =
+          task.subtasks.map((s) => s.copyWith(isCompleted: newStatus)).toList();
       final updatedTask = task.copyWith(
         isCompleted: newStatus,
         subtasks: updatedSubtasks,
@@ -194,8 +193,7 @@ class TaskRepository implements ITaskRepository {
         return s;
       }).toList();
 
-      final allCompleted =
-          updatedSubtasks.isNotEmpty &&
+      final allCompleted = updatedSubtasks.isNotEmpty &&
           updatedSubtasks.every((s) => s.isCompleted);
 
       final updatedTask = task.copyWith(

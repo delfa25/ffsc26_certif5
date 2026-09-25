@@ -81,14 +81,14 @@ class TaskCard extends StatelessWidget {
                     child: Text(
                       task.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                        fontWeight: FontWeight.bold,
-                        color: task.isCompleted
-                            ? Colors.grey
-                            : Theme.of(context).textTheme.bodyLarge?.color,
-                      ),
+                            decoration: task.isCompleted
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            fontWeight: FontWeight.bold,
+                            color: task.isCompleted
+                                ? Colors.grey
+                                : Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -209,9 +209,8 @@ class TaskCard extends StatelessWidget {
                           formattedDate,
                           style: TextStyle(
                             fontSize: 11,
-                            color: task.isOverdue
-                                ? Colors.red
-                                : Colors.grey[600],
+                            color:
+                                task.isOverdue ? Colors.red : Colors.grey[600],
                             fontWeight: task.isOverdue
                                 ? FontWeight.bold
                                 : FontWeight.normal,
