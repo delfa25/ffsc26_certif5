@@ -119,7 +119,8 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     try {
-      final id = json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final id = json['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString();
       final title = json['title']?.toString() ?? 'Untitled Task';
       final description = json['description']?.toString() ?? '';
 
@@ -137,14 +138,16 @@ class Task {
 
       DateTime dueDate;
       if (json['dueDate'] != null) {
-        dueDate = DateTime.tryParse(json['dueDate'].toString()) ?? DateTime.now();
+        dueDate =
+            DateTime.tryParse(json['dueDate'].toString()) ?? DateTime.now();
       } else {
         dueDate = DateTime.now();
       }
 
       DateTime createdAt;
       if (json['createdAt'] != null) {
-        createdAt = DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now();
+        createdAt =
+            DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now();
       } else {
         createdAt = DateTime.now();
       }

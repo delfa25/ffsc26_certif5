@@ -85,15 +85,19 @@ class TaskCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         task.title,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              decoration: task.isCompleted
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                              fontWeight: FontWeight.bold,
-                              color: task.isCompleted
-                                  ? Colors.grey
-                                  : Theme.of(context).textTheme.bodyLarge?.color,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  decoration: task.isCompleted
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none,
+                                  fontWeight: FontWeight.bold,
+                                  color: task.isCompleted
+                                      ? Colors.grey
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.color,
+                                ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -221,15 +225,17 @@ class TaskCard extends StatelessWidget {
                           Icon(
                             Icons.calendar_today,
                             size: 12,
-                            color: task.isOverdue ? Colors.red : Colors.grey[600],
+                            color:
+                                task.isOverdue ? Colors.red : Colors.grey[600],
                           ),
                           const SizedBox(width: 4),
                           Text(
                             formattedDate,
                             style: TextStyle(
                               fontSize: 11,
-                              color:
-                                  task.isOverdue ? Colors.red : Colors.grey[600],
+                              color: task.isOverdue
+                                  ? Colors.red
+                                  : Colors.grey[600],
                               fontWeight: task.isOverdue
                                   ? FontWeight.bold
                                   : FontWeight.normal,

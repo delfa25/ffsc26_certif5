@@ -7,7 +7,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('End-to-End Application Integration Tests Suite', () {
-    testWidgets('E2E Flow 1: Create a new task and interact with details screen', (
+    testWidgets(
+        'E2E Flow 1: Create a new task and interact with details screen', (
       WidgetTester tester,
     ) async {
       app.main();

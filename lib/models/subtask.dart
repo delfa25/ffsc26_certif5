@@ -23,7 +23,8 @@ class Subtask {
 
   factory Subtask.fromJson(Map<String, dynamic> json) {
     try {
-      final id = json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final id = json['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString();
       final title = json['title']?.toString() ?? 'Subtask';
       final isCompleted = json['isCompleted'] is bool
           ? json['isCompleted'] as bool
