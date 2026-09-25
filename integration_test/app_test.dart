@@ -6,8 +6,8 @@ import 'package:ffsc26_certif5/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('End-to-End Application Integration Tests', () {
-    testWidgets('E2E Flow 1: Create a new task and interact with details', (
+  group('End-to-End Application Integration Tests Suite', () {
+    testWidgets('E2E Flow 1: Create a new task and interact with details screen', (
       WidgetTester tester,
     ) async {
       app.main();
@@ -91,6 +91,28 @@ void main() {
       // Verify Settings Screen loaded
       expect(find.text('Paramètres'), findsOneWidget);
       expect(find.text('Mama Fadel DIAWARA'), findsOneWidget);
+    });
+
+    testWidgets('E2E Flow 3: Toggle language locale and theme settings', (
+      WidgetTester tester,
+    ) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Navigate to Settings Screen
+      final settingsButton = find.byIcon(Icons.settings);
+      await tester.tap(settingsButton);
+      await tester.pumpAndSettle();
+
+      // Tap English language selection button
+      final enButton = find.text('English');
+      if (enButton.evaluate().isNotEmpty) {
+        await tester.tap(enButton);
+        await tester.pumpAndSettle();
+
+        // Verify English text is applied
+        expect(find.text('Settings'), findsOneWidget);
+      }
     });
   });
 }

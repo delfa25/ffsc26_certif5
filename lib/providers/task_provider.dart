@@ -8,6 +8,7 @@ class TaskProvider with ChangeNotifier {
 
   List<Task> _tasks = [];
   bool _isLoading = false;
+  String? _errorMessage;
   String _searchQuery = '';
   TaskCategory? _selectedCategory;
   TaskPriority? _selectedPriority;
@@ -20,6 +21,7 @@ class TaskProvider with ChangeNotifier {
 
   List<Task> get tasks => _tasks;
   bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
   String get searchQuery => _searchQuery;
   TaskCategory? get selectedCategory => _selectedCategory;
   TaskPriority? get selectedPriority => _selectedPriority;
@@ -63,10 +65,21 @@ class TaskProvider with ChangeNotifier {
 
   Future<void> loadTasks() async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
-    _tasks = List.from(await _repository.getTasks());
-    _isLoading = false;
+    try {
+      _tasks = List.from(await _repository.getTasks());
+    } catch (e) {
+      _errorMessage = 'Error loading tasks: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearError() {
+    _errorMessage = null;
     notifyListeners();
   }
 
@@ -99,53 +112,95 @@ class TaskProvider with ChangeNotifier {
   }
 
   Future<void> addTask(Task task) async {
-    final newTask = await _repository.addTask(task);
-    _tasks = [..._tasks, newTask];
-    notifyListeners();
+    try {
+      _errorMessage = null;
+      final newTask = await _repository.addTask(task);
+      _tasks = [..._tasks, newTask];
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = 'Error adding task: $e';
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> updateTask(Task task) async {
-    final updated = await _repository.updateTask(task);
-    final index = _tasks.indexWhere((t) => t.id == task.id);
-    if (index != -1) {
-      _tasks[index] = updated;
+    try {
+      _errorMessage = null;
+      final updated = await _repository.updateTask(task);
+      final index = _tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        _tasks[index] = updated;
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = 'Error updating task: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
   Future<void> deleteTask(String id) async {
-    await _repository.deleteTask(id);
-    _tasks.removeWhere((t) => t.id == id);
-    notifyListeners();
+    try {
+      _errorMessage = null;
+      await _repository.deleteTask(id);
+      _tasks.removeWhere((t) => t.id == id);
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = 'Error deleting task: $e';
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> toggleTaskCompletion(String id) async {
-    final updated = await _repository.toggleTaskCompletion(id);
-    final index = _tasks.indexWhere((t) => t.id == id);
-    if (index != -1) {
-      _tasks[index] = updated;
+    try {
+      _errorMessage = null;
+      final updated = await _repository.toggleTaskCompletion(id);
+      final index = _tasks.indexWhere((t) => t.id == id);
+      if (index != -1) {
+        _tasks[index] = updated;
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = 'Error toggling task completion: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
   Future<void> addSubtask(String taskId, Subtask subtask) async {
-    final updated = await _repository.addSubtask(taskId, subtask);
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index != -1) {
-      _tasks[index] = updated;
+    try {
+      _errorMessage = null;
+      final updated = await _repository.addSubtask(taskId, subtask);
+      final index = _tasks.indexWhere((t) => t.id == taskId);
+      if (index != -1) {
+        _tasks[index] = updated;
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = 'Error adding subtask: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
   Future<void> toggleSubtaskCompletion(String taskId, String subtaskId) async {
-    final updated = await _repository.toggleSubtaskCompletion(
-      taskId,
-      subtaskId,
-    );
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index != -1) {
-      _tasks[index] = updated;
+    try {
+      _errorMessage = null;
+      final updated = await _repository.toggleSubtaskCompletion(
+        taskId,
+        subtaskId,
+      );
+      final index = _tasks.indexWhere((t) => t.id == taskId);
+      if (index != -1) {
+        _tasks[index] = updated;
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = 'Error toggling subtask completion: $e';
       notifyListeners();
+      rethrow;
     }
   }
 }

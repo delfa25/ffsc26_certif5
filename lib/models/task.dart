@@ -43,6 +43,7 @@ class Task {
   final List<Subtask> subtasks;
   final List<String> tags;
   final DateTime createdAt;
+  final String? imageUrl;
 
   const Task({
     required this.id,
@@ -55,6 +56,7 @@ class Task {
     this.subtasks = const [],
     this.tags = const [],
     required this.createdAt,
+    this.imageUrl,
   });
 
   double get progress {
@@ -82,6 +84,7 @@ class Task {
     List<Subtask>? subtasks,
     List<String>? tags,
     DateTime? createdAt,
+    String? imageUrl,
   }) {
     return Task(
       id: id ?? this.id,
@@ -94,6 +97,7 @@ class Task {
       subtasks: subtasks ?? this.subtasks,
       tags: tags ?? this.tags,
       createdAt: createdAt ?? this.createdAt,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -109,33 +113,77 @@ class Task {
       'subtasks': subtasks.map((s) => s.toJson()).toList(),
       'tags': tags,
       'createdAt': createdAt.toIso8601String(),
+      'imageUrl': imageUrl,
     };
   }
 
   factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      category: TaskCategory.values.firstWhere(
-        (c) => c.name == json['category'],
+    try {
+      final id = json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final title = json['title']?.toString() ?? 'Untitled Task';
+      final description = json['description']?.toString() ?? '';
+
+      final categoryStr = json['category']?.toString().toLowerCase() ?? '';
+      final category = TaskCategory.values.firstWhere(
+        (c) => c.name.toLowerCase() == categoryStr,
         orElse: () => TaskCategory.work,
-      ),
-      priority: TaskPriority.values.firstWhere(
-        (p) => p.name == json['priority'],
+      );
+
+      final priorityStr = json['priority']?.toString().toLowerCase() ?? '';
+      final priority = TaskPriority.values.firstWhere(
+        (p) => p.name.toLowerCase() == priorityStr,
         orElse: () => TaskPriority.medium,
-      ),
-      dueDate: DateTime.parse(json['dueDate'] as String),
-      isCompleted: json['isCompleted'] as bool? ?? false,
-      subtasks: (json['subtasks'] as List<dynamic>?)
-              ?.map((s) => Subtask.fromJson(s as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      tags:
-          (json['tags'] as List<dynamic>?)?.map((t) => t as String).toList() ??
-              const [],
-      createdAt: DateTime.parse(json['createdAt'] as String),
-    );
+      );
+
+      DateTime dueDate;
+      if (json['dueDate'] != null) {
+        dueDate = DateTime.tryParse(json['dueDate'].toString()) ?? DateTime.now();
+      } else {
+        dueDate = DateTime.now();
+      }
+
+      DateTime createdAt;
+      if (json['createdAt'] != null) {
+        createdAt = DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now();
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final isCompleted = json['isCompleted'] is bool
+          ? json['isCompleted'] as bool
+          : json['isCompleted']?.toString().toLowerCase() == 'true';
+
+      List<Subtask> subtasks = [];
+      if (json['subtasks'] is List) {
+        subtasks = (json['subtasks'] as List)
+            .whereType<Map<String, dynamic>>()
+            .map((s) => Subtask.fromJson(s))
+            .toList();
+      }
+
+      List<String> tags = [];
+      if (json['tags'] is List) {
+        tags = (json['tags'] as List).map((t) => t.toString()).toList();
+      }
+
+      final imageUrl = json['imageUrl']?.toString();
+
+      return Task(
+        id: id,
+        title: title,
+        description: description,
+        category: category,
+        priority: priority,
+        dueDate: dueDate,
+        isCompleted: isCompleted,
+        subtasks: subtasks,
+        tags: tags,
+        createdAt: createdAt,
+        imageUrl: imageUrl,
+      );
+    } catch (e) {
+      throw FormatException('Failed to parse Task from JSON: $e');
+    }
   }
 
   @override

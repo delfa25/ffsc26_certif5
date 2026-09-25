@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../models/task.dart';
 import '../models/subtask.dart';
 
@@ -13,12 +14,25 @@ abstract class ITaskRepository {
 
 class TaskRepository implements ITaskRepository {
   final List<Task> _tasks = [];
+  bool _initialized = false;
 
   TaskRepository({List<Task>? initialTasks}) {
     if (initialTasks != null) {
       _tasks.addAll(initialTasks);
-    } else {
-      _seedDefaultTasks();
+      _initialized = true;
+    }
+  }
+
+  Future<void> _ensureInitialized() async {
+    if (_initialized) return;
+    try {
+      // Seed default tasks if empty
+      if (_tasks.isEmpty) {
+        _seedDefaultTasks();
+      }
+      _initialized = true;
+    } catch (e) {
+      throw Exception('Failed to initialize task repository: $e');
     }
   }
 
@@ -126,83 +140,120 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<List<Task>> getTasks() async {
+    await _ensureInitialized();
     return List.unmodifiable(_tasks);
   }
 
   @override
   Future<Task> addTask(Task task) async {
-    _tasks.add(task);
-    return task;
+    await _ensureInitialized();
+    try {
+      _tasks.add(task);
+      return task;
+    } catch (e) {
+      throw Exception('Failed to add task: $e');
+    }
   }
 
   @override
   Future<Task> updateTask(Task task) async {
-    final index = _tasks.indexWhere((t) => t.id == task.id);
-    if (index != -1) {
-      _tasks[index] = task;
-      return task;
+    await _ensureInitialized();
+    try {
+      final index = _tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        _tasks[index] = task;
+        return task;
+      }
+      throw Exception('Task with id ${task.id} not found');
+    } catch (e) {
+      throw Exception('Failed to update task: $e');
     }
-    throw Exception('Task with id ${task.id} not found');
   }
 
   @override
   Future<void> deleteTask(String id) async {
-    _tasks.removeWhere((t) => t.id == id);
+    await _ensureInitialized();
+    try {
+      _tasks.removeWhere((t) => t.id == id);
+    } catch (e) {
+      throw Exception('Failed to delete task: $e');
+    }
   }
 
   @override
   Future<Task> toggleTaskCompletion(String id) async {
-    final index = _tasks.indexWhere((t) => t.id == id);
-    if (index != -1) {
-      final task = _tasks[index];
-      final newStatus = !task.isCompleted;
-      final updatedSubtasks =
-          task.subtasks.map((s) => s.copyWith(isCompleted: newStatus)).toList();
-      final updatedTask = task.copyWith(
-        isCompleted: newStatus,
-        subtasks: updatedSubtasks,
-      );
-      _tasks[index] = updatedTask;
-      return updatedTask;
+    await _ensureInitialized();
+    try {
+      final index = _tasks.indexWhere((t) => t.id == id);
+      if (index != -1) {
+        final task = _tasks[index];
+        final newStatus = !task.isCompleted;
+        final updatedSubtasks =
+            task.subtasks.map((s) => s.copyWith(isCompleted: newStatus)).toList();
+        final updatedTask = task.copyWith(
+          isCompleted: newStatus,
+          subtasks: updatedSubtasks,
+        );
+        _tasks[index] = updatedTask;
+        return updatedTask;
+      }
+      throw Exception('Task with id $id not found');
+    } catch (e) {
+      throw Exception('Failed to toggle task completion: $e');
     }
-    throw Exception('Task with id $id not found');
   }
 
   @override
   Future<Task> addSubtask(String taskId, Subtask subtask) async {
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index != -1) {
-      final task = _tasks[index];
-      final updatedSubtasks = [...task.subtasks, subtask];
-      final updatedTask = task.copyWith(subtasks: updatedSubtasks);
-      _tasks[index] = updatedTask;
-      return updatedTask;
+    await _ensureInitialized();
+    try {
+      final index = _tasks.indexWhere((t) => t.id == taskId);
+      if (index != -1) {
+        final task = _tasks[index];
+        final updatedSubtasks = [...task.subtasks, subtask];
+        final updatedTask = task.copyWith(subtasks: updatedSubtasks);
+        _tasks[index] = updatedTask;
+        return updatedTask;
+      }
+      throw Exception('Task with id $taskId not found');
+    } catch (e) {
+      throw Exception('Failed to add subtask: $e');
     }
-    throw Exception('Task with id $taskId not found');
   }
 
   @override
   Future<Task> toggleSubtaskCompletion(String taskId, String subtaskId) async {
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index != -1) {
-      final task = _tasks[index];
-      final updatedSubtasks = task.subtasks.map((s) {
-        if (s.id == subtaskId) {
-          return s.copyWith(isCompleted: !s.isCompleted);
-        }
-        return s;
-      }).toList();
+    await _ensureInitialized();
+    try {
+      final index = _tasks.indexWhere((t) => t.id == taskId);
+      if (index != -1) {
+        final task = _tasks[index];
+        final updatedSubtasks = task.subtasks.map((s) {
+          if (s.id == subtaskId) {
+            return s.copyWith(isCompleted: !s.isCompleted);
+          }
+          return s;
+        }).toList();
 
-      final allCompleted = updatedSubtasks.isNotEmpty &&
-          updatedSubtasks.every((s) => s.isCompleted);
+        final allCompleted = updatedSubtasks.isNotEmpty &&
+            updatedSubtasks.every((s) => s.isCompleted);
 
-      final updatedTask = task.copyWith(
-        subtasks: updatedSubtasks,
-        isCompleted: allCompleted,
-      );
-      _tasks[index] = updatedTask;
-      return updatedTask;
+        final updatedTask = task.copyWith(
+          subtasks: updatedSubtasks,
+          isCompleted: allCompleted,
+        );
+        _tasks[index] = updatedTask;
+        return updatedTask;
+      }
+      throw Exception('Task with id $taskId not found');
+    } catch (e) {
+      throw Exception('Failed to toggle subtask completion: $e');
     }
-    throw Exception('Task with id $taskId not found');
+  }
+
+  /// Utility method to serialize all tasks to JSON string
+  String exportToJson() {
+    final list = _tasks.map((t) => t.toJson()).toList();
+    return jsonEncode(list);
   }
 }
