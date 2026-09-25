@@ -1,8 +1,8 @@
 # TaskCraft - Production-Ready Flutter Application 🚀
 
 [![CI/CD Pipeline](https://github.com/mamafadel/ffsc26_certif5/actions/workflows/ci.yml/badge.svg)](https://github.com/mamafadel/ffsc26_certif5/actions)
-![Flutter Version](https://img.shields.io/badge/Flutter-3.27.x-02569B?logo=flutter)
-![Dart SDK](https://img.shields.io/badge/Dart-3.12-0175C2?logo=dart)
+![Flutter Version](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)
+![Dart SDK](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Certification Score](https://img.shields.io/badge/Certification_Score-%E2%89%A5_70%2F100_Validated-success)
 
@@ -93,8 +93,8 @@ Exécuter : `flutter test integration_test/app_test.dart`
 ## 🚀 Installation & Exécution
 
 ### Prérequis
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version ≥ 3.27.0)
-- Dart SDK (version ≥ 3.12.0)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version ≥ 3.24.0)
+- Dart SDK (version ≥ 3.0.0)
 
 ### Étapes
 ```bash
