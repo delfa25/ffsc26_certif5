@@ -11,8 +11,10 @@ void main() {
     });
 
     test('Subtask copyWith updates properties correctly', () {
-      const original = Subtask(id: 's1', title: 'Write tests', isCompleted: false);
-      final updated = original.copyWith(isCompleted: true, title: 'Write unit tests');
+      const original =
+          Subtask(id: 's1', title: 'Write tests', isCompleted: false);
+      final updated =
+          original.copyWith(isCompleted: true, title: 'Write unit tests');
 
       expect(updated.id, equals('s1'));
       expect(updated.title, equals('Write unit tests'));
@@ -20,7 +22,8 @@ void main() {
     });
 
     test('Subtask toJson and fromJson serialization', () {
-      const subtask = Subtask(id: 's100', title: 'Verify i10n', isCompleted: true);
+      const subtask =
+          Subtask(id: 's100', title: 'Verify i10n', isCompleted: true);
       final json = subtask.toJson();
       final deserialized = Subtask.fromJson(json);
 

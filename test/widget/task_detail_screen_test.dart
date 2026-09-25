@@ -10,7 +10,8 @@ import 'package:ffsc26_certif5/screens/task_detail_screen.dart';
 import 'package:ffsc26_certif5/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('TaskDetailScreen displays task title, description and category', (
+  testWidgets('TaskDetailScreen displays task title, description and category',
+      (
     WidgetTester tester,
   ) async {
     final repository = TaskRepository(

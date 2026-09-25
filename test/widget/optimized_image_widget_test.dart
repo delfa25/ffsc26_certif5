@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ffsc26_certif5/widgets/optimized_image_widget.dart';
 
 void main() {
-  testWidgets('OptimizedImageWidget renders fallback icon when imageUrl is null', (
+  testWidgets(
+      'OptimizedImageWidget renders fallback icon when imageUrl is null', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
